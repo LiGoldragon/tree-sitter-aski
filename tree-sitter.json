@@ -1,0 +1,18 @@
+{
+  "metadata": {
+    "version": "0.12.0",
+    "links": {}
+  },
+  "grammars": [
+    {
+      "name": "aski",
+      "camelCase": true,
+      "scope": "source.aski",
+      "file-types": ["aski"],
+      "highlights": "queries/highlights.scm",
+      "indents": "queries/indents.scm",
+      "locals": "queries/locals.scm",
+      "injection-regex": "^aski$"
+    }
+  ]
+}

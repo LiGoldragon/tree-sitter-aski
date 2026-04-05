@@ -1,0 +1,10 @@
+{
+  "name": "tree-sitter-aski",
+  "version": "0.12.0",
+  "description": "Aski v0.12 grammar for tree-sitter",
+  "main": "bindings/node",
+  "keywords": ["parser", "tree-sitter", "aski"],
+  "devDependencies": {
+    "tree-sitter-cli": "^0.25.0"
+  }
+}

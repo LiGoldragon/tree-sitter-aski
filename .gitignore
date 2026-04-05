@@ -1,0 +1,28 @@
+# Rust
+/target
+
+# Nix
+.direnv/
+result
+
+# Editor tempfiles
+\#*\#
+.\#*
+*~
+.*.swp
+
+# MCP config (local)
+.mcp.json
+
+# Databases (local)
+*.db
+
+# Node
+node_modules/
+
+# Tree-sitter generated (rebuild with tree-sitter generate)
+src/parser.c
+src/grammar.json
+src/node-types.json
+src/tree_sitter/
+*.wasm
