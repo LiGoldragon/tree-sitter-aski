@@ -51,10 +51,8 @@ module.exports = grammar({
   ],
 
   rules: {
-    source_file: $ => seq(
-      optional($.module_header),
-      repeat($._item),
-    ),
+    source_file: $ => repeat($._top_level),
+    _top_level: $ => choice($._item),
 
     // ── Comments ──
     comment: $ => token(seq(';;', /.*/)),
@@ -102,10 +100,18 @@ module.exports = grammar({
     trait_bound: $ => seq($.identifier, repeat(seq('&', $.identifier))),
 
     // ── Module header: (Name exports) [imports] {constraints} ──
-    module_header: $ => seq(
-      '(', field('name', $.type_identifier), repeat(choice($.type_identifier, $.identifier)), ')',
+    // Module header: (Name exports...) [imports...] {constraints...}
+    // Uses prec to win over commit_arm and paren_expr
+    module_header: $ => prec.dynamic(20, seq(
+      $.header_exports,
       optional($.import_block),
       optional($.constraint_block),
+    )),
+    header_exports: $ => seq(
+      '(',
+      field('name', $.type_identifier),
+      repeat(choice($.type_identifier, $.identifier)),
+      ')',
     ),
     import_block: $ => seq('[', repeat($.import_entry), ']'),
     import_entry: $ => seq(
@@ -116,6 +122,7 @@ module.exports = grammar({
 
     // ── Top-level items ──
     _item: $ => choice(
+      $.module_header,
       $.domain_decl,
       $.struct_decl,
       $.const_decl,
@@ -313,7 +320,9 @@ module.exports = grammar({
     ),
 
     mutable_set: $ => seq(
-      '~', $.instance_ref, token.immediate('.'),
+      '~', $.instance_ref,
+      repeat(seq(token.immediate('.'), $._upper_ident)),  // field chain: .Field1.Field2
+      token.immediate('.'),
       choice(
         seq('set', token.immediate('('), $._expr, ')'),
         seq('extend', token.immediate('('), $._expr, ')'),
@@ -373,13 +382,13 @@ module.exports = grammar({
     ),
 
     // expr.field or expr.method (no call parens)
-    access_expr: $ => prec.left(PREC.ACCESS, seq(
-      $._expr, token.immediate('.'), choice($._upper_ident, $._lower_ident),
+    access_expr: $ => prec.left(PREC.ACCESS + 5, seq(
+      $._expr, '.', choice($._upper_ident, $._lower_ident),
     )),
 
-    // expr.method(args)
-    method_call_expr: $ => prec.left(PREC.CALL, seq(
-      $._expr, token.immediate('.'), choice($._lower_ident, $._upper_ident),
+    // expr.method(args) — chains can span lines
+    method_call_expr: $ => prec.left(PREC.CALL + 5, seq(
+      $._expr, '.', choice($._lower_ident, $._upper_ident),
       token.immediate('('), repeat($._expr), ')',
     )),
 
