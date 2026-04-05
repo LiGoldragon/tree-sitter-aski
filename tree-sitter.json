@@ -1,18 +1,31 @@
 {
-  "metadata": {
-    "version": "0.12.0",
-    "links": {}
-  },
   "grammars": [
     {
       "name": "aski",
       "camelCase": true,
       "scope": "source.aski",
+      "path": ".",
       "file-types": ["aski"],
       "highlights": "queries/highlights.scm",
       "indents": "queries/indents.scm",
       "locals": "queries/locals.scm",
       "injection-regex": "^aski$"
     }
-  ]
+  ],
+  "metadata": {
+    "version": "0.12.0",
+    "license": "LNA",
+    "description": "Aski v0.12 grammar for tree-sitter",
+    "authors": [
+      {
+        "name": "Li"
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/LiGoldragon/tree-sitter-aski"
+    }
+  },
+  "bindings": {
+    "c": true
+  }
 }
